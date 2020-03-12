@@ -92,6 +92,11 @@ declare interface CheckoutButtonInitializeOptions extends CheckoutButtonOptions 
      */
     paypal?: PaypalButtonInitializeOptions;
     /**
+     * The options that are required to facilitate PayPal Commerce. They can be omitted
+     * unless you need to support Paypal.
+     */
+    paypalCommerce?: PaypalCommerceButtonInitializeOptions;
+    /**
      * The ID of a container which the checkout button should be inserted.
      */
     containerId: string;
@@ -202,7 +207,8 @@ declare enum CheckoutButtonMethodType {
     GOOGLEPAY_BRAINTREE = "googlepaybraintree",
     GOOGLEPAY_STRIPE = "googlepaystripe",
     MASTERPASS = "masterpass",
-    PAYPALEXPRESS = "paypalexpress"
+    PAYPALEXPRESS = "paypalexpress",
+    PAYPALCOMMERCE = "paypalcommerce"
 }
 
 /**
@@ -283,6 +289,13 @@ declare interface PaypalButtonStyleOptions {
     shape?: 'pill' | 'rect';
     tagline?: boolean;
     fundingicons?: boolean;
+}
+
+declare interface PaypalCommerceButtonInitializeOptions {
+    /**
+     * A set of styling options for the checkout button.
+     */
+    style?: any;
 }
 
 /**

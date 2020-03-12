@@ -43,6 +43,13 @@ ___
 **MASTERPASS**:  = "masterpass"
 
 ___
+<a id="paypalcommerce"></a>
+
+###  PAYPALCOMMERCE
+
+**PAYPALCOMMERCE**:  = "paypalcommerce"
+
+___
 <a id="paypalexpress"></a>
 
 ###  PAYPALEXPRESS
