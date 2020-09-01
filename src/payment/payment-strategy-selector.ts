@@ -10,6 +10,7 @@ export default interface PaymentStrategySelector {
     getFinalizeError(methodId?: string): Error | undefined;
     getWidgetInteractingError(methodId?: string): Error | undefined;
     isInitializing(methodId?: string): boolean;
+    isWaitingForInteraction(methodId?: string): boolean;
     isInitialized(methodId: string): boolean;
     isExecuting(methodId?: string): boolean;
     isFinalizing(methodId?: string): boolean;
@@ -79,6 +80,18 @@ export function createPaymentStrategySelectorFactory(): PaymentStrategySelectorF
         }
     );
 
+    const isWaitingForInteraction = createSelector(
+        (state: PaymentStrategyState) => state.statuses.executeMethodId,
+        (state: PaymentStrategyState) => state.statuses.isWaitingForInteraction,
+        (executeMethodId, isWaitingForInteraction) => (methodId?: string) => {
+            if (methodId && executeMethodId !== methodId) {
+                return false;
+            }
+
+            return !!isWaitingForInteraction;
+        }
+    );
+
     const isInitialized = createSelector(
         (state: PaymentStrategyState) => state.data,
         data => (methodId: string) => {
@@ -138,6 +151,7 @@ export function createPaymentStrategySelectorFactory(): PaymentStrategySelectorF
             isExecuting: isExecuting(state),
             isFinalizing: isFinalizing(state),
             isWidgetInteracting: isWidgetInteracting(state),
+            isWaitingForInteraction: isWaitingForInteraction(state),
         };
     });
 }

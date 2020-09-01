@@ -1,3 +1,4 @@
+import { noop } from 'lodash';
 import { Cart } from '../../../cart';
 import { CheckoutStore, InternalCheckoutSelectors } from '../../../checkout';
 import { OrderActionCreator, OrderRequestBody } from '../../../order';
@@ -6,6 +7,7 @@ import { PaymentArgumentInvalidError } from '../../errors';
 import PaymentActionCreator from '../../payment-action-creator';
 import PaymentMethodActionCreator from '../../payment-method-action-creator';
 import { PaymentInitializeOptions, PaymentRequestOptions } from '../../payment-request-options';
+import PaymentStrategyActionCreator from '../../payment-strategy-action-creator';
 import PaymentStrategy from '../payment-strategy';
 
 import {    ButtonsOptions,
@@ -15,7 +17,7 @@ import {    ButtonsOptions,
 import PaypalCommerceScriptLoader from './paypal-commerce-script-loader';
 
 export default class PaypalCommercePaymentStrategy implements PaymentStrategy {
-
+    private _methodId?: string;
     constructor(
         private _store: CheckoutStore,
         private _orderActionCreator: OrderActionCreator,
@@ -23,17 +25,19 @@ export default class PaypalCommercePaymentStrategy implements PaymentStrategy {
         private _paypalCommerceRequestSender: PaypalCommerceRequestSender,
         private _paypalCommercePaymentProcessor: PaypalCommercePaymentProcessor,
         private _paypalScriptLoader: PaypalCommerceScriptLoader,
-        private _paymentMethodActionCreator: PaymentMethodActionCreator
+        private _paymentMethodActionCreator: PaymentMethodActionCreator,
+        private _paymentStrategyActionCreator: PaymentStrategyActionCreator
     ) {}
 
     async initialize(options: PaymentInitializeOptions): Promise<InternalCheckoutSelectors> {
+        this._methodId = options.methodId;
         const state = await this._store.dispatch(this._paymentMethodActionCreator.loadPaymentMethod(options.methodId));
-        const { initializationData } = state.paymentMethods.getPaymentMethodOrThrow(options.methodId);
+        const paymentMethod = state.paymentMethods.getPaymentMethodOrThrow(options.methodId);
 
         const cart = state.cart.getCartOrThrow();
 
         const paramsScript = {
-            options: this._getOptionsScript(initializationData, cart),
+            options: this._getOptionsScript(paymentMethod.initializationData, cart),
             attr: { },
         };
         const paypal = await this._paypalScriptLoader.loadPaypalCommerce(paramsScript, true);
@@ -42,13 +46,14 @@ export default class PaypalCommercePaymentStrategy implements PaymentStrategy {
             fundingSource: paypal.FUNDING.PAYPAL,
             onClick: () => {},
             createOrder: () => this._setupPayment(cart.id),
-            onApprove: () => {}, // TODO handle order creation instead place order button
+            onApprove: () => { paymentMethod.nonce = '112312';}, // TODO handle order creation instead place order button, allow place order button
         };
         // TODO check if method avaialble
         // @ts-ignore
         paypal.Buttons(buttonParams).render(options.paypalcommerce?.container);
+        this._showLoadingSpinner(() => new Promise(noop));
 
-        return Promise.resolve(this._store.getState());
+        return this._store.getState();
     }
 
     async execute(payload: OrderRequestBody, options: PaymentRequestOptions): Promise<InternalCheckoutSelectors> {
@@ -88,15 +93,22 @@ export default class PaypalCommercePaymentStrategy implements PaymentStrategy {
         return Promise.resolve(this._store.getState());
     }
 
+    private _showLoadingSpinner(callback?: () => Promise<void> | Promise<never>): Promise<InternalCheckoutSelectors> {
+        return this._store.dispatch(this._paymentStrategyActionCreator.widgetBlocksTheSubmitButton(() => {
+
+            if (callback) {
+                return callback();
+            }
+
+            return Promise.reject();
+        }, { methodId: this._methodId }));
+    }
+
     private async _getOrderId(methodId: string): Promise<string> {
         const state = this._store.getState();
         const cart = state.cart.getCartOrThrow();
         const provider = methodId === 'paypalcommercecredit' ? 'paypalcommercecreditcheckout' : 'paypalcommercecheckout';
-        const { approveUrl, orderId } = await this._paypalCommerceRequestSender.setupPayment(provider, cart.id);
-
-        if (approveUrl) {
-            await this._paypalCommercePaymentProcessor.paymentPayPal(approveUrl);
-        }
+        const { orderId } = await this._paypalCommerceRequestSender.setupPayment(provider, cart.id);
 
         return orderId;
     }

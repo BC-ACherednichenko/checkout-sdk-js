@@ -16,6 +16,9 @@ export enum PaymentStrategyActionType {
     DeinitializeRequested = 'PAYMENT_STRATEGY_DEINITIALIZE_REQUESTED',
     DeinitializeSucceeded = 'PAYMENT_STRATEGY_DEINITIALIZE_SUCCEEDED',
     WidgetInteractionStarted = 'PAYMENT_STRATEGY_WIDGET_INTERACTION_STARTED',
+    WaitingForInteractionStarted = 'PAYMENT_STRATEGY_WIDGET_WAITING_INTERACTION_STARTED',
+    WaitingForInteractionFinished = 'PAYMENT_STRATEGY_WIDGET_WAITING_INTERACTION_FINISHED',
+    WaitingForInteractionFailed = 'PAYMENT_STRATEGY_WIDGET_WAITING_INTERACTION_FAILED',
     WidgetInteractionFinished = 'PAYMENT_STRATEGY_WIDGET_INTERACTION_FINISHED',
     WidgetInteractionFailed = 'PAYMENT_STRATEGY_WIDGET_INTERACTION_FAILED',
 }
@@ -25,7 +28,8 @@ export type PaymentStrategyAction =
     PaymentStrategyFinalizeAction |
     PaymentStrategyInitializeAction |
     PaymentStrategyDeinitializeAction |
-    PaymentStrategyWidgetAction;
+    PaymentStrategyWidgetAction |
+    PaymentStrategyWaitingForInteractionAction;
 
 export type PaymentStrategyExecuteAction =
     ExecuteRequestedAction |
@@ -53,6 +57,11 @@ export type PaymentStrategyWidgetAction =
     WidgetInteractionStartedAction |
     WidgetInteractionFinishedAction |
     WidgetInteractionFailedAction;
+
+export type PaymentStrategyWaitingForInteractionAction =
+    WaitingForInteractionStartedAction |
+    WaitingForInteractionFinishedAction |
+    WaitingForInteractionFailedAction;
 
 export interface ExecuteRequestedAction extends Action {
     type: PaymentStrategyActionType.ExecuteRequested;
@@ -112,4 +121,16 @@ export interface WidgetInteractionFinishedAction extends Action {
 
 export interface WidgetInteractionFailedAction extends Action<Error> {
     type: PaymentStrategyActionType.WidgetInteractionFailed;
+}
+
+export interface WaitingForInteractionStartedAction extends Action {
+    type: PaymentStrategyActionType.WaitingForInteractionStarted;
+}
+
+export interface WaitingForInteractionFinishedAction extends Action {
+    type: PaymentStrategyActionType.WaitingForInteractionFinished;
+}
+
+export interface WaitingForInteractionFailedAction extends Action {
+    type: PaymentStrategyActionType.WaitingForInteractionFailed;
 }

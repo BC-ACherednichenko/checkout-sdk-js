@@ -299,7 +299,8 @@ export default function createPaymentStrategyRegistry(
             new PaypalCommerceRequestSender(requestSender),
             new PaypalCommercePaymentProcessor(),
             new PaypalCommerceScriptLoader(scriptLoader),
-            paymentMethodActionCreator
+            paymentMethodActionCreator,
+            paymentStrategyActionCreator
         )
     );
 
@@ -311,7 +312,8 @@ export default function createPaymentStrategyRegistry(
             new PaypalCommerceRequestSender(requestSender),
             new PaypalCommercePaymentProcessor(),
             new PaypalCommerceScriptLoader(scriptLoader),
-            paymentMethodActionCreator
+            paymentMethodActionCreator,
+            paymentStrategyActionCreator
         )
     );
 

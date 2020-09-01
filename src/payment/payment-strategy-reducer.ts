@@ -137,14 +137,13 @@ function statusesReducer(
 
     case PaymentStrategyActionType.DeinitializeRequested:
         return objectMerge(statuses, {
-            isDeinitializing: true,
             deinitializeMethodId: action.meta && action.meta.methodId,
         });
 
     case PaymentStrategyActionType.DeinitializeFailed:
     case PaymentStrategyActionType.DeinitializeSucceeded:
+        // @ts-ignore
         return objectMerge(statuses, {
-            isDeinitializing: false,
             deinitializeMethodId: undefined,
         });
 
@@ -172,6 +171,12 @@ function statusesReducer(
         return objectMerge(statuses, {
             isFinalizing: false,
             finalizeMethodId: undefined,
+        });
+
+    case PaymentStrategyActionType.WaitingForInteractionStarted:
+        return objectMerge(statuses, {
+            isWaitingForInteraction: true,
+            widgetInteractionMethodId: action.meta.methodId,
         });
 
     case PaymentStrategyActionType.WidgetInteractionStarted:
