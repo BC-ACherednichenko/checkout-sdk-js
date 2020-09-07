@@ -12,6 +12,7 @@ export interface PaypalCommercePaymentInitializeOptions {
      */
     form?: PaypalCommerceFormOptions;
     container?: string | undefined;
+    submitForm?: (() => (void | undefined));
 }
 
 export interface PaypalCommerceFormOptions {
