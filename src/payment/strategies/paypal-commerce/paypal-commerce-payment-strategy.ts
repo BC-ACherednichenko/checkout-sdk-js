@@ -1,3 +1,4 @@
+import { noop } from 'rxjs';
 import { Cart } from '../../../cart';
 import { CheckoutStore, InternalCheckoutSelectors } from '../../../checkout';
 import { OrderActionCreator, OrderRequestBody } from '../../../order';
@@ -6,6 +7,7 @@ import { PaymentArgumentInvalidError } from '../../errors';
 import PaymentActionCreator from '../../payment-action-creator';
 import PaymentMethodActionCreator from '../../payment-method-action-creator';
 import { PaymentInitializeOptions, PaymentRequestOptions } from '../../payment-request-options';
+import PaymentStrategyActionCreator from '../../payment-strategy-action-creator';
 import PaymentStrategy from '../payment-strategy';
 
 import {    ButtonsOptions,
@@ -15,6 +17,7 @@ import {    ButtonsOptions,
 import PaypalCommerceScriptLoader from './paypal-commerce-script-loader';
 
 export default class PaypalCommercePaymentStrategy implements PaymentStrategy {
+    private _methodId?: string;
     constructor(
         private _store: CheckoutStore,
         private _orderActionCreator: OrderActionCreator,
@@ -23,6 +26,7 @@ export default class PaypalCommercePaymentStrategy implements PaymentStrategy {
         private _paypalCommercePaymentProcessor: PaypalCommercePaymentProcessor,
         private _paypalScriptLoader: PaypalCommerceScriptLoader,
         private _paymentMethodActionCreator: PaymentMethodActionCreator,
+        private _paymentStrategyActionCreator: PaymentStrategyActionCreator
     ) {}
 
     async initialize(options: PaymentInitializeOptions): Promise<InternalCheckoutSelectors> {
@@ -44,6 +48,8 @@ export default class PaypalCommercePaymentStrategy implements PaymentStrategy {
             onApprove: () => { // @ts-ignore
                 options.paypalcommerce?.submitForm(); }, // TODO handle order creation instead place order button, allow place order button
         };
+        // TODO enable regular button if order id exists
+        await this._showEmbeddedButton(() => new Promise(noop));
         // TODO check if method avaialble
         // @ts-ignore
         paypal.Buttons(buttonParams).render(options.paypalcommerce?.container);
@@ -86,6 +92,17 @@ export default class PaypalCommercePaymentStrategy implements PaymentStrategy {
         this._paypalCommercePaymentProcessor.deinitialize();
 
         return Promise.resolve(this._store.getState());
+    }
+
+    private _showEmbeddedButton(callback?: () => Promise<void> | Promise<never>): Promise<InternalCheckoutSelectors> {
+        return this._store.dispatch(this._paymentStrategyActionCreator.embeddedSubmitButtonAction(() => {
+
+            if (callback) {
+                return callback();
+            }
+
+            return Promise.reject();
+        }, { methodId: this._methodId }));
     }
 
     private async _getOrderId(methodId: string): Promise<string> {

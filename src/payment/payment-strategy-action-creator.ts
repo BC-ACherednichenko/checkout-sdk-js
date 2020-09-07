@@ -13,10 +13,10 @@ import { SpamProtectionAction, SpamProtectionActionCreator } from '../spam-prote
 import { PaymentInitializeOptions, PaymentRequestOptions } from './payment-request-options';
 import { PaymentStrategyActionType,
     PaymentStrategyDeinitializeAction,
+    PaymentStrategyEmbeddedSubmitButtonAction,
     PaymentStrategyExecuteAction,
     PaymentStrategyFinalizeAction,
     PaymentStrategyInitializeAction,
-    PaymentStrategyWaitingForInteractionAction,
     PaymentStrategyWidgetAction } from './payment-strategy-actions';
 import PaymentStrategyRegistry from './payment-strategy-registry';
 import PaymentStrategyType from './payment-strategy-type';
@@ -141,17 +141,17 @@ export default class PaymentStrategyActionCreator {
         );
     }
 
-    widgetBlocksTheSubmitButton(method: () => Promise<any>, options?: { methodId: string | undefined }): Observable<PaymentStrategyWaitingForInteractionAction> {
+    embeddedSubmitButtonAction(method: () => Promise<any>, options?: { methodId: string | undefined }): Observable<PaymentStrategyEmbeddedSubmitButtonAction> {
         const methodId = options && options.methodId;
         const meta = { methodId };
 
         return concat(
-            of(createAction(PaymentStrategyActionType.WaitingForInteractionStarted, undefined, meta)),
+            of(createAction(PaymentStrategyActionType.EmbeddedSubmitButtonStarted, undefined, meta)),
             defer(() =>
-                method().then(() => createAction(PaymentStrategyActionType.WaitingForInteractionFinished, undefined, meta))
+                method().then(() => createAction(PaymentStrategyActionType.EmbeddedSubmitButtonFinished, undefined, meta))
             )
         ).pipe(
-            catchError(error => throwErrorAction(PaymentStrategyActionType.WaitingForInteractionFailed, error, meta))
+            catchError(error => throwErrorAction(PaymentStrategyActionType.EmbeddedSubmitButtonFailed, error, meta))
         );
     }
 

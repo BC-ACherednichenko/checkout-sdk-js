@@ -10,7 +10,7 @@ export default interface PaymentStrategySelector {
     getFinalizeError(methodId?: string): Error | undefined;
     getWidgetInteractingError(methodId?: string): Error | undefined;
     isInitializing(methodId?: string): boolean;
-    isWaitingForInteraction(methodId?: string): boolean;
+    isEmbeddedSubmitButton(methodId?: string): boolean;
     isInitialized(methodId: string): boolean;
     isExecuting(methodId?: string): boolean;
     isFinalizing(methodId?: string): boolean;
@@ -80,15 +80,15 @@ export function createPaymentStrategySelectorFactory(): PaymentStrategySelectorF
         }
     );
 
-    const isWaitingForInteraction = createSelector(
+    const isEmbeddedSubmitButton = createSelector(
         (state: PaymentStrategyState) => state.statuses.executeMethodId,
-        (state: PaymentStrategyState) => state.statuses.isWaitingForInteraction,
-        (executeMethodId, isWaitingForInteraction) => (methodId?: string) => {
+        (state: PaymentStrategyState) => state.statuses.isEmbeddedSubmitButton,
+        (executeMethodId, isEmbeddedSubmitButton) => (methodId?: string) => {
             if (methodId && executeMethodId !== methodId) {
                 return false;
             }
 
-            return !!isWaitingForInteraction;
+            return !!isEmbeddedSubmitButton;
         }
     );
 
@@ -151,7 +151,7 @@ export function createPaymentStrategySelectorFactory(): PaymentStrategySelectorF
             isExecuting: isExecuting(state),
             isFinalizing: isFinalizing(state),
             isWidgetInteracting: isWidgetInteracting(state),
-            isWaitingForInteraction: isWaitingForInteraction(state),
+            isEmbeddedSubmitButton: isEmbeddedSubmitButton(state),
         };
     });
 }

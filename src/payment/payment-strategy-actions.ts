@@ -16,9 +16,9 @@ export enum PaymentStrategyActionType {
     DeinitializeRequested = 'PAYMENT_STRATEGY_DEINITIALIZE_REQUESTED',
     DeinitializeSucceeded = 'PAYMENT_STRATEGY_DEINITIALIZE_SUCCEEDED',
     WidgetInteractionStarted = 'PAYMENT_STRATEGY_WIDGET_INTERACTION_STARTED',
-    WaitingForInteractionStarted = 'PAYMENT_STRATEGY_WIDGET_WAITING_INTERACTION_STARTED',
-    WaitingForInteractionFinished = 'PAYMENT_STRATEGY_WIDGET_WAITING_INTERACTION_FINISHED',
-    WaitingForInteractionFailed = 'PAYMENT_STRATEGY_WIDGET_WAITING_INTERACTION_FAILED',
+    EmbeddedSubmitButtonStarted = 'PAYMENT_STRATEGY_EMBEDDED_SUBMIT_BUTTON_STARTED',
+    EmbeddedSubmitButtonFinished = 'PAYMENT_STRATEGY_EMBEDDED_SUBMIT_BUTTON_FINISHED',
+    EmbeddedSubmitButtonFailed = 'PAYMENT_STRATEGY_EMBEDDED_SUBMIT_BUTTON_FAILED',
     WidgetInteractionFinished = 'PAYMENT_STRATEGY_WIDGET_INTERACTION_FINISHED',
     WidgetInteractionFailed = 'PAYMENT_STRATEGY_WIDGET_INTERACTION_FAILED',
 }
@@ -29,7 +29,7 @@ export type PaymentStrategyAction =
     PaymentStrategyInitializeAction |
     PaymentStrategyDeinitializeAction |
     PaymentStrategyWidgetAction |
-    PaymentStrategyWaitingForInteractionAction;
+    PaymentStrategyEmbeddedSubmitButtonAction;
 
 export type PaymentStrategyExecuteAction =
     ExecuteRequestedAction |
@@ -58,10 +58,10 @@ export type PaymentStrategyWidgetAction =
     WidgetInteractionFinishedAction |
     WidgetInteractionFailedAction;
 
-export type PaymentStrategyWaitingForInteractionAction =
-    WaitingForInteractionStartedAction |
-    WaitingForInteractionFinishedAction |
-    WaitingForInteractionFailedAction;
+export type PaymentStrategyEmbeddedSubmitButtonAction =
+    EmbeddedSubmitButtonStartedAction |
+    EmbeddedSubmitButtonFinishedAction |
+    EmbeddedSubmitButtonFailedAction;
 
 export interface ExecuteRequestedAction extends Action {
     type: PaymentStrategyActionType.ExecuteRequested;
@@ -123,14 +123,14 @@ export interface WidgetInteractionFailedAction extends Action<Error> {
     type: PaymentStrategyActionType.WidgetInteractionFailed;
 }
 
-export interface WaitingForInteractionStartedAction extends Action {
-    type: PaymentStrategyActionType.WaitingForInteractionStarted;
+export interface EmbeddedSubmitButtonStartedAction extends Action {
+    type: PaymentStrategyActionType.EmbeddedSubmitButtonStarted;
 }
 
-export interface WaitingForInteractionFinishedAction extends Action {
-    type: PaymentStrategyActionType.WaitingForInteractionFinished;
+export interface EmbeddedSubmitButtonFinishedAction extends Action {
+    type: PaymentStrategyActionType.EmbeddedSubmitButtonFinished;
 }
 
-export interface WaitingForInteractionFailedAction extends Action {
-    type: PaymentStrategyActionType.WaitingForInteractionFailed;
+export interface EmbeddedSubmitButtonFailedAction extends Action {
+    type: PaymentStrategyActionType.EmbeddedSubmitButtonFailed;
 }

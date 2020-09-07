@@ -173,10 +173,10 @@ function statusesReducer(
             finalizeMethodId: undefined,
         });
 
-    case PaymentStrategyActionType.WaitingForInteractionStarted:
+    case PaymentStrategyActionType.EmbeddedSubmitButtonStarted:
         return objectMerge(statuses, {
-            isWaitingForInteraction: true,
-            widgetInteractionMethodId: action.meta.methodId,
+            isEmbeddedSubmitButton: true,
+            embeddedSubmitMethodId: action.meta.methodId,
         });
 
     case PaymentStrategyActionType.WidgetInteractionStarted:

@@ -29,8 +29,8 @@ export interface PaymentStrategyStatusesState {
     finalizeMethodId?: string;
     initializeMethodId?: string;
     interactionMethodId?: string;
-    isWaitingForInteraction?: boolean;
-    waitingInteractionMethodId?: string;
+    isEmbeddedSubmitButton?: boolean;
+    embeddedSubmitMethodId?: string;
     isExecuting?: boolean;
     isFinalizing?: boolean;
     isInitializing?: boolean;
