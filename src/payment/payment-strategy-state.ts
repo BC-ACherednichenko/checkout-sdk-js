@@ -28,7 +28,9 @@ export interface PaymentStrategyStatusesState {
     executeMethodId?: string;
     finalizeMethodId?: string;
     initializeMethodId?: string;
-    isDeinitializing?: boolean;
+    interactionMethodId?: string;
+    isEmbeddedSubmitButton?: boolean;
+    embeddedSubmitMethodId?: string;
     isExecuting?: boolean;
     isFinalizing?: boolean;
     isInitializing?: boolean;

@@ -16,6 +16,9 @@ export enum PaymentStrategyActionType {
     DeinitializeRequested = 'PAYMENT_STRATEGY_DEINITIALIZE_REQUESTED',
     DeinitializeSucceeded = 'PAYMENT_STRATEGY_DEINITIALIZE_SUCCEEDED',
     WidgetInteractionStarted = 'PAYMENT_STRATEGY_WIDGET_INTERACTION_STARTED',
+    EmbeddedSubmitButtonStarted = 'PAYMENT_STRATEGY_EMBEDDED_SUBMIT_BUTTON_STARTED',
+    EmbeddedSubmitButtonFinished = 'PAYMENT_STRATEGY_EMBEDDED_SUBMIT_BUTTON_FINISHED',
+    EmbeddedSubmitButtonFailed = 'PAYMENT_STRATEGY_EMBEDDED_SUBMIT_BUTTON_FAILED',
     WidgetInteractionFinished = 'PAYMENT_STRATEGY_WIDGET_INTERACTION_FINISHED',
     WidgetInteractionFailed = 'PAYMENT_STRATEGY_WIDGET_INTERACTION_FAILED',
 }
@@ -25,7 +28,8 @@ export type PaymentStrategyAction =
     PaymentStrategyFinalizeAction |
     PaymentStrategyInitializeAction |
     PaymentStrategyDeinitializeAction |
-    PaymentStrategyWidgetAction;
+    PaymentStrategyWidgetAction |
+    PaymentStrategyEmbeddedSubmitButtonAction;
 
 export type PaymentStrategyExecuteAction =
     ExecuteRequestedAction |
@@ -53,6 +57,11 @@ export type PaymentStrategyWidgetAction =
     WidgetInteractionStartedAction |
     WidgetInteractionFinishedAction |
     WidgetInteractionFailedAction;
+
+export type PaymentStrategyEmbeddedSubmitButtonAction =
+    EmbeddedSubmitButtonStartedAction |
+    EmbeddedSubmitButtonFinishedAction |
+    EmbeddedSubmitButtonFailedAction;
 
 export interface ExecuteRequestedAction extends Action {
     type: PaymentStrategyActionType.ExecuteRequested;
@@ -112,4 +121,16 @@ export interface WidgetInteractionFinishedAction extends Action {
 
 export interface WidgetInteractionFailedAction extends Action<Error> {
     type: PaymentStrategyActionType.WidgetInteractionFailed;
+}
+
+export interface EmbeddedSubmitButtonStartedAction extends Action {
+    type: PaymentStrategyActionType.EmbeddedSubmitButtonStarted;
+}
+
+export interface EmbeddedSubmitButtonFinishedAction extends Action {
+    type: PaymentStrategyActionType.EmbeddedSubmitButtonFinished;
+}
+
+export interface EmbeddedSubmitButtonFailedAction extends Action {
+    type: PaymentStrategyActionType.EmbeddedSubmitButtonFailed;
 }

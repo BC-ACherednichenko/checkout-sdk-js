@@ -49,6 +49,7 @@ export interface PaypalButtonStyleOptions {
 
 export interface ButtonsOptions {
     style?: PaypalButtonStyleOptions;
+    fundingSource?: string;
     createOrder(): Promise<string>;
     onApprove(data: ApproveDataOptions): void;
     onClick(data: ClickDataOptions): void;
@@ -108,6 +109,9 @@ export interface PaypalCommerceHostedFieldsFieldData {
 }
 
 export interface PaypalCommerceSDK {
+    FUNDING: {
+        PAYPAL: string;
+    };
     HostedFields: {
         isEligible(): boolean;
         render(data: PaypalCommerceHostedFieldsRenderOptions): Promise<PaypalCommerceHostedFields>;

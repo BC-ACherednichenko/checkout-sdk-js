@@ -12,16 +12,22 @@ import { PaymentArgumentInvalidError } from '../../errors';
 import PaymentActionCreator from '../../payment-action-creator';
 import { PaymentActionType } from '../../payment-actions';
 import PaymentMethod from '../../payment-method';
+import PaymentMethodActionCreator from '../../payment-method-action-creator';
 import { PaymentMethodActionType } from '../../payment-method-actions';
 import { getPaypalCommerce } from '../../payment-methods.mock';
 import { PaymentInitializeOptions } from '../../payment-request-options';
+import PaymentStrategyActionCreator from '../../payment-strategy-action-creator';
 import PaymentStrategy from '../payment-strategy';
 
 import { PaypalCommercePaymentProcessor, PaypalCommercePaymentStrategy, PaypalCommerceRequestSender } from './index';
+import PaypalCommerceScriptLoader from './paypal-commerce-script-loader';
 
 describe('PaypalCommercePaymentStrategy', () => {
     let orderActionCreator: OrderActionCreator;
     let paymentActionCreator: PaymentActionCreator;
+    let paymentStrategyActionCreator: PaymentStrategyActionCreator;
+    let paymentMethodActionCreator: PaymentMethodActionCreator;
+    let paypalCommerceScriptLoader: PaypalCommerceScriptLoader;
     let paypalCommercePaymentStrategy: PaymentStrategy;
     let paymentMethod: PaymentMethod;
     let store: CheckoutStore;
@@ -49,6 +55,9 @@ describe('PaypalCommercePaymentStrategy', () => {
         orderActionCreator.submitOrder = jest.fn(() => submitOrderAction);
 
         paymentActionCreator = {} as PaymentActionCreator;
+        paymentStrategyActionCreator = {} as PaymentStrategyActionCreator;
+        paymentMethodActionCreator = {} as PaymentMethodActionCreator;
+        paypalCommerceScriptLoader = {} as PaypalCommerceScriptLoader;
         paymentActionCreator.submitPayment = jest.fn(() => submitPaymentAction);
 
         paypalCommercePaymentProcessor.initialize = jest.fn();
@@ -61,7 +70,10 @@ describe('PaypalCommercePaymentStrategy', () => {
             orderActionCreator,
             paymentActionCreator,
             paypalCommerceRequestSender,
-            paypalCommercePaymentProcessor
+            paypalCommercePaymentProcessor,
+            paypalCommerceScriptLoader,
+            paymentMethodActionCreator,
+            paymentStrategyActionCreator
         );
     });
 

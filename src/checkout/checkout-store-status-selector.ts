@@ -114,6 +114,13 @@ export default interface CheckoutStoreStatusSelector {
     isInitializingPayment(methodId?: string): boolean;
 
     /**
+     * TODO add description after testing
+     * @param methodId - The identifier of the payment method to check.
+     * @returns True if the payment method is initializing, otherwise false.
+     */
+    isEmbeddedSubmitButton(methodId?: string): boolean;
+
+    /**
      * Checks whether the current customer is signing in.
      *
      * If an ID is provided, the method also checks whether the customer is
@@ -431,6 +438,7 @@ export function createCheckoutStoreStatusSelectorFactory(): CheckoutStoreStatusS
             isLoadingPaymentMethods: state.paymentMethods.isLoading,
             isLoadingPaymentMethod: state.paymentMethods.isLoadingMethod,
             isInitializingPayment: state.paymentStrategies.isInitializing,
+            isEmbeddedSubmitButton: state.paymentStrategies.isEmbeddedSubmitButton,
             isSigningIn: state.customerStrategies.isSigningIn,
             isSigningOut: state.customerStrategies.isSigningOut,
             isInitializingCustomer: state.customerStrategies.isInitializing,
